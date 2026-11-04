@@ -1,9 +1,13 @@
-Fach: SYTB Übungen
-Thema: Shell Skript – Command Substitution
-Name: Lukas Eder
-Klasse: 3AHITS
-Datum der Übung: 21.10.2026
-Link zur Aufgabenstellung: https://raw.githubusercontent.com/HTL-Braunau-probst/testdata/refs/heads/main/wordlist.txt (nur Wortliste für Übung 2, Angabe sonst direkt im Unterricht)
+# Bericht: Command Substitution
+
+| | |
+|---|---|
+| **Fach** | SYTB Übungen |
+| **Thema** | Shell-Skript – Command Substitution |
+| **Name** | Lukas Eder |
+| **Klasse** | 3AHITS |
+| **Datum der Übung** | 21.10.2026 |
+| **Aufgabenstellung** | Angabe im Unterricht; Wortliste für Übung 2: [wordlist.txt](https://raw.githubusercontent.com/HTL-Braunau-probst/testdata/refs/heads/main/wordlist.txt) |
 
 ---
 
@@ -22,9 +26,9 @@ Hinweise:
 
 **Lösung:**
 
-Mit Command Substitution `$(...)` wird die Ausgabe eines Befehls in einer Variable gespeichert. `date +%s` liefert die aktuelle Zeit in Sekunden seit 1970, `date --date="$BALL_DATUM" +%s` dasselbe für das Datum des Balls. Die Differenz der beiden Werte ist die Zeit bis zum Ball in Sekunden. Geteilt durch 86400 (Sekunden pro Tag) ergibt das die Tage. Gerechnet wird mit `$(( ))`.
+Das Balldatum liegt in der Variable `BALL_DATUM`. Über Command Substitution `$(...)` speichere ich die Ausgabe von `date` in weiteren Variablen: einmal die aktuelle Zeit (`date +%s`), einmal die Zeit des Balls (`date --date="$BALL_DATUM" +%s`), beides in Sekunden seit 1970. Die Differenz wird mit `$(( ))` berechnet und durch 86400 geteilt (so viele Sekunden hat ein Tag), das ergibt die verbleibenden Tage.
 
-ball.sh:
+`ball.sh`:
 
 ```sh
 #!/bin/bash
@@ -40,7 +44,7 @@ TAGE=$(( (BALL - JETZT) / 86400 ))
 echo "Es sind noch $TAGE Tage bis zum HTL Ball ($BALL_DATUM)"
 ```
 
-Typische Fehler, die man hier machen kann: `--date` muss ohne Leerzeichen geschrieben werden (nicht `-- date`) und die Klammer von `$(( ... ))` muss mit `))` wieder geschlossen werden, sonst bricht das Skript mit einem Syntaxfehler ab.
+Beim Schreiben ist mir aufgefallen: `--date` darf kein Leerzeichen enthalten, und `$(( ... ))` muss mit `))` geschlossen werden, sonst kommt ein Syntaxfehler.
 
 ---
 
@@ -77,9 +81,9 @@ Hinweis: Verwende Command Substitution und das Kommando `date`.
 
 **Lösung:**
 
-In `$1` steht das Argument vom Aufruf, also der Dateiname. Mit `$(date +%F)` wird das heutige Datum im Format `JJJJ-MM-TT` in eine Variable geschrieben. Danach kopiert `cp` die Datei unter dem neuen Namen `<Datum>_<Dateiname>`. Bei `${DATUM}` braucht man die Klammern, damit die Shell weiß, wo der Variablenname aufhört.
+Der Dateiname kommt als erstes Argument (`$1`). `date +%F` liefert das heutige Datum als `JJJJ-MM-TT`, das über `$(...)` in `DATUM` landet. `cp` legt dann die Kopie mit dem Namen `<Datum>_<Dateiname>` an. Die geschweiften Klammern bei `${DATUM}` sorgen dafür, dass der Unterstrich nicht zum Variablennamen gezählt wird.
 
-datierte_kopie.sh:
+`datierte_kopie.sh`:
 
 ```sh
 #!/bin/bash
