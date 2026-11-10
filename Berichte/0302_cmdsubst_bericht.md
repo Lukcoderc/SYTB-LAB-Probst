@@ -26,7 +26,7 @@ Hinweise:
 
 **Lösung:**
 
-Mit `date +%s` hole ich die aktuelle Zeit und die Zeit des Balls in Sekunden. Die Differenz teile ich durch 86400 (Sekunden pro Tag), das ergibt die Tage.
+Mit `date +%s` holt das Programm aktuelle Zeit und die Zeit des Balls in Sekunden. Die Differenz teilt das Programm durch 86400 (Sekunden pro Tag), das ergibt die Tage.
 
 `ball.sh`:
 
