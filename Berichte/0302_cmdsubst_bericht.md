@@ -26,7 +26,7 @@ Hinweise:
 
 **Lösung:**
 
-Das Balldatum liegt in der Variable `BALL_DATUM`. Über Command Substitution `$(...)` speichere ich die Ausgabe von `date` in weiteren Variablen: einmal die aktuelle Zeit (`date +%s`), einmal die Zeit des Balls (`date --date="$BALL_DATUM" +%s`), beides in Sekunden seit 1970. Die Differenz wird mit `$(( ))` berechnet und durch 86400 geteilt (so viele Sekunden hat ein Tag), das ergibt die verbleibenden Tage.
+Mit `date +%s` hole ich die aktuelle Zeit und die Zeit des Balls in Sekunden. Die Differenz teile ich durch 86400 (Sekunden pro Tag), das ergibt die Tage.
 
 `ball.sh`:
 
@@ -49,7 +49,7 @@ Ausgabe (am 10.11.2026):
 Es sind noch 65 Tage bis zum HTL Ball (2027-01-15)
 ```
 
-Beim Schreiben ist mir aufgefallen: `--date` darf kein Leerzeichen enthalten, und `$(( ... ))` muss mit `))` geschlossen werden, sonst kommt ein Syntaxfehler.
+Achtung: `$(( ... ))` muss mit `))` geschlossen werden, sonst gibt es einen Syntaxfehler.
 
 ---
 
@@ -74,7 +74,7 @@ Hinweise:
 
 **Lösung:**
 
-Die Wortliste wird mit `wget` geladen (nur falls sie noch nicht existiert). Die Anzahl der Wörter ermittelt `wc -l < wordlist.txt` – so steht keine feste Zahl im Skript. Pro Wort wird mit `$(( RANDOM % ANZAHL + 1 ))` eine Zeilennummer von 1 bis `ANZAHL` berechnet (das `+ 1`, weil `sed` bei 1 zu zählen beginnt) und mit `sed -n <Nr>p` genau diese Zeile ausgegeben.
+`wget` lädt die Wortliste, `wc -l` zählt die Wörter. Für jedes Wort wird mit `$RANDOM` eine Zeilennummer gewählt (`+ 1`, weil `sed` bei 1 zu zählen beginnt) und mit `sed -n` diese Zeile ausgegeben.
 
 `satz.sh`:
 
@@ -106,7 +106,7 @@ DM bis allerdings bringen Grünen
 Jahren schließlich stellte Ich besteht
 ```
 
-Wichtig: `wc -l < datei` statt `wc -l datei`, sonst steht der Dateiname mit in der Ausgabe.
+Bei `wc -l < datei` kommt nur die Zahl raus, ohne den Dateinamen.
 
 ---
 
@@ -118,7 +118,7 @@ Hinweis: Verwende Command Substitution und das Kommando `date`.
 
 **Lösung:**
 
-Der Dateiname kommt als erstes Argument (`$1`). `date +%F` liefert das heutige Datum als `JJJJ-MM-TT`, das über `$(...)` in `DATUM` landet. `cp` legt dann die Kopie mit dem Namen `<Datum>_<Dateiname>` an. Die geschweiften Klammern bei `${DATUM}` sorgen dafür, dass der Unterstrich nicht zum Variablennamen gezählt wird.
+`date +%F` liefert das Datum als `JJJJ-MM-TT`. `cp` kopiert die Datei mit dem Datum vorne im Namen.
 
 `datierte_kopie.sh`:
 
@@ -143,7 +143,7 @@ Hinweis: Verwende `cut`, um den Dateinamen von der Endung zu trennen, z.B. `echo
 
 **Lösung:**
 
-`cut -d. -f1` liefert alles vor dem ersten Punkt (Name), `cut -d. -f2-` alles danach (Endung). Hat die Datei keinen Punkt, gibt `cut` die ganze Zeile zurück – dann ist `NAME` gleich `$1` und das Datum wird einfach hinten angehängt.
+`cut -d. -f1` gibt den Namen vor dem ersten Punkt aus, `cut -d. -f2-` die Endung danach. Hat die Datei keine Endung, wird das Datum einfach angehängt.
 
 `kopie_v2.sh`:
 
@@ -170,7 +170,7 @@ Test:
 | `archiv.tar.gz` | `archiv_2026-11-10.tar.gz` |
 | `README` | `README_2026-11-10` |
 
-Zu den Sonderfällen: Mit `-f2-` bleibt bei `archiv.tar.gz` die ganze Endung `tar.gz` erhalten (mit `-f2` wäre es nur `tar`). Ohne die `if`-Abfrage würde bei `README` die Kopie `README_2026-11-10.README` heißen, weil `cut` ohne Trennzeichen die ganze Zeile ausgibt. Nicht abgedeckt sind Pfade mit Punkt (z.B. `../file.txt`) und versteckte Dateien wie `.bashrc`.
+Bei `archiv.tar.gz` bleibt dank `-f2-` die ganze Endung `tar.gz` erhalten. Bei `README` gibt es keinen Punkt, darum wird das Datum nur hinten angehängt.
 
 ---
 
@@ -182,7 +182,7 @@ Hinweis: Verwende `$@` (siehe Kapitel Argumentliste). Alternativ kann auch das K
 
 **Lösung:**
 
-Der Code aus V2 kommt in eine `for`-Schleife über `"$@"` (alle Argumente). Durch die Anführungszeichen funktionieren auch Dateinamen mit Leerzeichen.
+Gleicher Code wie V2, nur in einer `for`-Schleife über alle Argumente (`"$@"`).
 
 `kopie_v3.sh`:
 
