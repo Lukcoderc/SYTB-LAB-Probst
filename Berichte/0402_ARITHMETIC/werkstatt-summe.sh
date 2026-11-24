@@ -1,6 +1,6 @@
 #!/bin/bash
 
-summe=$(grep "Werkstatt" klassenkassa.csv | cut -d',' -f2 | paste -sd+)
+summe=$(grep "Werkstatt" klassenkassa.csv | cut -d',' -f3 | paste -sd+)
 
 ergebnis=$((summe))
 
